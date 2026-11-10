@@ -24,12 +24,14 @@ The dataset is manually created using Python dictionaries.
 - Generate inventory summary
 - Export reports to CSV files
 - Perform basic data validation
+- Run automated tests using unittest
 
 ## Technologies Used
 
 - Python
 - Pandas
 - NumPy
+- Unittest
 - CSV File Handling
 
 ## Project Structure
@@ -41,6 +43,9 @@ Inventory-Data-Analyzer/
 ├── README.md
 ├── requirements.txt
 ├── .gitignore
+│
+├── tests/
+│   └── test_analysis.py
 │
 └── output/
     ├── inventory_summary.csv
@@ -65,13 +70,13 @@ cd Inventory-Data-Analyzer
 ### 3. Install Required Libraries
 
 ```bash
-pip install -r requirements.txt
+py -m pip install -r requirements.txt
 ```
 
 ### 4. Run the Project
 
 ```bash
-python main.py
+py main.py
 ```
 
 ## Reports
@@ -91,6 +96,28 @@ The project also performs four basic validation checks:
 - Checks for negative product quantities.
 - Checks for missing values.
 
+The validation checks are handled through a reusable `validate_data()` function.
+
+## Automated Testing
+
+The project includes automated tests using Python's built-in unittest framework.
+
+The tests check:
+
+- Valid inventory data.
+- Duplicate ProductID.
+- Negative product prices.
+- Negative product quantities.
+- Missing values.
+- All validation conditions.
+- Importing `main.py` without running the program.
+
+### Run Tests
+
+```bash
+py -m unittest tests/test_analysis.py -v
+```
+
 ## What I Learned
 
 While making this project, I practiced:
@@ -102,6 +129,7 @@ While making this project, I practiced:
 - Grouping data by categories
 - Working with CSV files
 - Performing basic data validation
+- Writing automated tests using unittest
 
 ## Future Improvements
 
@@ -109,6 +137,7 @@ While making this project, I practiced:
 - Update existing product information.
 - Remove products from the inventory.
 - Save inventory changes permanently.
+- Read inventory data from a CSV file.
 - Create visual reports using Matplotlib and Seaborn.
 
 ## Author

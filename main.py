@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import os
 
+
 # Inventory Dataset
 products = [
     {"ProductID": 101,   "ProductName": "Laptop",        "Category": "Electronics",   "Price": 85000,     "Quantity": 8},
@@ -23,123 +24,143 @@ products = [
 ]
 
 
-# Create DataFrame
-df = pd.DataFrame(products)
+# Data Validation Function
+def validate_data(df):
+    validation_results = {
+        "Test 1": df["ProductID"].is_unique,
+        "Test 2": (df["Price"] >= 0).all(),
+        "Test 3": (df["Quantity"] >= 0).all(),
+        "Test 4": df.notnull().all().all()
+    }
 
-print("====== INVENTORY DATA ANALYZER ======")
-
-# 1. Display Inventory Dataset
-print("\n--- Complete Inventory Data ---")
-print(df.to_string(index=False))
-
-
-# 2. Basic Inventory Information
-total_products = len(df)
-total_stock = df["Quantity"].sum()
-total_inventory_value = (df["Price"] * df["Quantity"]).sum()
-
-print("\n--- Inventory Information ---")
-print("Total Products:", total_products)
-print("Total Available Stock:", total_stock)
-print("Total Inventory Value:", total_inventory_value)
+    return validation_results
 
 
-# 3. Find Most Expensive Product
-expensive_product = df.loc[df["Price"].idxmax()]
+# Main Function
+def main():
 
-print("\n--- Most Expensive Product ---")
-print("Product Name:", expensive_product["ProductName"])
-print("Price:", expensive_product["Price"])
+    # Create DataFrame
+    df = pd.DataFrame(products)
 
+    print("\n================== INVENTORY DATA ANALYZER =================")
 
-# 4. Find Cheapest Product
-cheapest_product = df.loc[df["Price"].idxmin()]
-
-print("\n--- Cheapest Product ---")
-print("Product Name:", cheapest_product["ProductName"])
-print("Price:", cheapest_product["Price"])
+    # 1. Display Inventory Dataset
+    print("\n============== Complete Inventory Data ==============\n")
+    print(df.to_string(index=False))
 
 
-# 5. Find Low Stock Products
-low_stock = df[df["Quantity"] <= 10]
+    # 2. Basic Inventory Information
+    total_products = len(df)
+    total_stock = df["Quantity"].sum()
+    total_inventory_value = (df["Price"] * df["Quantity"]).sum()
 
-print("\n--- Low Stock Products ---")
-print(low_stock.to_string(index=False))
-
-
-# 6. Calculate Average Product Price
-average_price = np.mean(df["Price"])
-
-print("\n--- Average Product Price ---")
-print(round(average_price, 2))
+    print("\n============== Inventory Information ===============\n")
+    print("Total Products:", total_products)
+    print("Total Available Stock:", total_stock)
+    print("Total Inventory Value:", total_inventory_value)
 
 
-# 7. Category Wise Analysis
-category_summary = df.groupby("Category").agg(
-    Total_Products=("ProductID", "count"),
-    Total_Stock=("Quantity", "sum"),
-    Total_Value=("Price", lambda price: (price * df.loc[price.index, "Quantity"]).sum())
-)
+    # 3. Find Most Expensive Product
+    expensive_product = df.loc[df["Price"].idxmax()]
 
-print("\n--- Category Wise Analysis ---")
-print(category_summary)
+    print("\n============ Most Expensive Product =============\n")
+    print("Product Name:", expensive_product["ProductName"])
+    print("Price:", expensive_product["Price"])
 
 
-# 8. Sort Products by Price
-sorted_by_price = df.sort_values(by="Price", ascending=False)
+    # 4. Find Cheapest Product
+    cheapest_product = df.loc[df["Price"].idxmin()]
 
-print("\n--- Products Sorted by Price ---")
-print(sorted_by_price.to_string(index=False))
-
-
-# 9. Sort Products by Quantity
-sorted_by_quantity = df.sort_values(by="Quantity", ascending=False)
-
-print("\n--- Products Sorted by Quantity ---")
-print(sorted_by_quantity.to_string(index=False))
+    print("\n================ Cheapest Product ================\n")
+    print("Product Name:", cheapest_product["ProductName"])
+    print("Price:", cheapest_product["Price"])
 
 
-# 10. Inventory Summary
-inventory_summary = pd.DataFrame({
-    "Metric": [
-        "Total Products",
-        "Total Available Stock",
-        "Total Inventory Value",
-        "Most Expensive Product",
-        "Cheapest Product",
-        "Average Product Price",
-        "Low Stock Products"
-    ],
-    "Value": [
-        total_products,
-        total_stock,
-        total_inventory_value,
-        expensive_product["ProductName"],
-        cheapest_product["ProductName"],
-        round(average_price, 2),
-        len(low_stock)
-    ]
-})
+    # 5. Find Low Stock Products
+    low_stock = df[df["Quantity"] <= 10]
 
-print("\n--- Final Inventory Summary ---")
-print(inventory_summary.to_string(index=False))
+    print("\n================ Low Stock Products ================\n")
+    print(low_stock.to_string(index=False))
 
 
-# 11. Basic Data Validation
-print("\n--- Data Validation ---")
+    # 6. Calculate Average Product Price
+    average_price = np.mean(df["Price"])
 
-print("Test 1:", "Passed" if df["ProductID"].is_unique else "Failed")
-print("Test 2:", "Passed" if (df["Price"] >= 0).all() else "Failed")
-print("Test 3:", "Passed" if (df["Quantity"] >= 0).all() else "Failed")
-print("Test 4:", "Passed" if df.notnull().all().all() else "Failed")
+    print("\n============== Average Product Price ================\n")
+    print(round(average_price, 2))
 
 
-# 12. Export Reports to CSV
-os.makedirs("output", exist_ok=True)
+    # 7. Category Wise Analysis
+    category_summary = df.groupby("Category").agg(
+        Total_Products=("ProductID", "count"),
+        Total_Stock=("Quantity", "sum"),
+        Total_Value=("Price", lambda price: (price * df.loc[price.index, "Quantity"]).sum())
+    )
 
-inventory_summary.to_csv("output/inventory_summary.csv", index=False)
-low_stock.to_csv("output/low_stock_products.csv", index=False)
-category_summary.to_csv("output/category_summary.csv")
+    print("\n============== Category Wise Analysis ===============\n")
+    print(category_summary)
 
-print("\nReports exported successfully!")
-print("Check the output folder for CSV files.")
+
+    # 8. Sort Products by Price
+    sorted_by_price = df.sort_values(by="Price", ascending=False)
+
+    print("\n\n============= Products Sorted by Price ==============\n")
+    print(sorted_by_price.to_string(index=False))
+
+
+    # 9. Sort Products by Quantity
+    sorted_by_quantity = df.sort_values(by="Quantity", ascending=False)
+
+    print("\n\n============ Products Sorted by Quantity ============\n")
+    print(sorted_by_quantity.to_string(index=False))
+
+
+    # 10. Inventory Summary
+    inventory_summary = pd.DataFrame({
+        "Metric": [
+            "Total Products",
+            "Total Available Stock",
+            "Total Inventory Value",
+            "Most Expensive Product",
+            "Cheapest Product",
+            "Average Product Price",
+            "Low Stock Products"
+        ],
+        "Value": [
+            total_products,
+            total_stock,
+            total_inventory_value,
+            expensive_product["ProductName"],
+            cheapest_product["ProductName"],
+            round(average_price, 2),
+            len(low_stock)
+        ]
+    })
+
+    print("\n\n=========== Final Inventory Summary ===========\n")
+    print(inventory_summary.to_string(index=False))
+
+
+    # 11. Basic Data Validation
+    print("\n\n=========== Data Validation ===========\n")
+
+    validation_results = validate_data(df)
+
+    for test, result in validation_results.items():
+        print(test + ":", "Passed" if result else "Failed")
+
+
+    # 12. Export Reports to CSV
+    os.makedirs("output", exist_ok=True)
+
+    inventory_summary.to_csv("output/inventory_summary.csv", index=False)
+    low_stock.to_csv("output/low_stock_products.csv", index=False)
+    category_summary.to_csv("output/category_summary.csv")
+
+    print("\n=========== Report Export ===========\n")
+    print("Reports exported successfully!")
+    print("Check the output folder for CSV files.")
+
+
+if __name__ == "__main__":
+    main()
